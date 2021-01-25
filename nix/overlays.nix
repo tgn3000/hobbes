@@ -4,13 +4,9 @@ with final;
 let
   dbg = if debug == true then enableDebugging else (x: x);
 
-  nativeBuildInputs = [ cmake ninja shake python27 ghc ];
+  nativeBuildInputs = [ cmake ninja python27 ];
 
-  buildInputs = [ ncurses readline zlib python27 ]
-                ++ (with haskellPackages; [ clock random shake heaps splitmix
-                                            filepattern utf8-string
-                                            js-dgtable js-jquery js-flot
-                                          ]);
+  buildInputs = [ ncurses readline zlib python27 ];
 
   cmakeFlags = [ "-GNinja" ];
 
@@ -113,5 +109,17 @@ in {
         value = recurseIntoAttrs ({
           hobbes = dbg (callPackage withCLANG { inherit llvmVersion; });
         });
-      }) llvmVersions));
+      }) llvmVersions)) // recurseIntoAttrs {
+        inherit
+          zlib
+          ncurses
+          readline
+          llvm_8
+          clang_8
+        ;
+        inherit (haskellPackages)
+          shake
+          shake-language-c
+        ;
+      };
 }

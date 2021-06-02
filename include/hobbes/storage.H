@@ -275,12 +275,15 @@ static inline unsigned spin(unsigned count) {
 }
 
 static inline void uxchg(volatile uint32_t* px, uint32_t nx) {
-  __asm__ __volatile__(
-    "xchgl %0,%1"
-    :"=r" (nx)
-    :"m" (*px), "0" (nx)
-    :"memory"
-  );
+  // __asm__ __volatile__(
+  //   "xchgl %0,%1"
+  //   :"=r" (nx)
+  //   :"m" (*px), "0" (nx)
+  //   :"memory"
+  // );
+  const uint32_t t = nx;
+  nx = *px;
+  *px = t;
 }
 #define xchg __sync_lock_test_and_set
 

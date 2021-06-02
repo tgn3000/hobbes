@@ -52,6 +52,7 @@ else()
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
+set(llvm_libs "-lLLVM -lLLVMAArch64AsmParser ${llvm_libs}")
 message(STATUS "llvm libs: ${llvm_libs}")
 message(STATUS "llvm ldflags: ${llvm_ldflags}")
 message(STATUS "llvm syslibs: ${sys_libs}")

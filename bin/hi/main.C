@@ -193,14 +193,14 @@ void showUnsafeSymbols() {
 
 void echoCommandHistory() {
   const int history_max = 10;
-  HIST_ENTRY** history = history_list();
-  if (history) {
-    // take the last history_max elements of history
-    int startIndex = history_length > history_max ? history_length - history_max : 0;
-    for (int i = startIndex; i < history_length; ++i) {
-      std::cout << history[i]->line << std::endl;
-    }
-  }
+  // HIST_ENTRY** history = history_list();
+  // if (history) {
+  //   // take the last history_max elements of history
+  //   int startIndex = history_length > history_max ? history_length - history_max : 0;
+  //   for (int i = startIndex; i < history_length; ++i) {
+  //     std::cout << history[i]->line << std::endl;
+  //   }
+  // }
 }
 
 // indicate that we want input

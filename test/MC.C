@@ -123,6 +123,7 @@ T assemble(const mc::MInsts& insts) {
   return reinterpret_cast<T>(b->finalize());
 }
 
+#ifndef __aarch64__
 TEST(MC, BasicIntFn) {
   auto f = assemble<int(*)(int)>({
     mc::MInst::make("mov", "eax", "edi"),
@@ -270,4 +271,4 @@ TEST(MC, StructUsage) {
 
   EXPECT_EQ(f(s), 42);
 }
-
+#endif // #ifndef __aarch64__

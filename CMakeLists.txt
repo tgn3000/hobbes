@@ -65,6 +65,14 @@ include_directories(include)
 file(GLOB test_files test/*.C)
 file(GLOB hi_files bin/hi/*.C)
 file(GLOB_RECURSE hog_files bin/hog/*.C)
+file(GLOB ex_files bin/examples/*.C)
+
+list(REMOVE_ITEM test_files
+  "${CMAKE_CURRENT_SOURCE_DIR}/test/MC.C"
+  "${CMAKE_CURRENT_SOURCE_DIR}/test/Storage.C"
+  "${CMAKE_CURRENT_SOURCE_DIR}/test/Python.C"
+)
+message(STATUS "test_files = ${test_files}")
 
 if(UNIX AND NOT APPLE)
   set(LINUX TRUE)
@@ -93,6 +101,9 @@ add_executable(hi ${hi_files})
 target_link_libraries(hi PUBLIC "-rdynamic" PRIVATE hobbes ${Readline_LIBRARIES})
 add_executable(hog ${hog_files})
 target_link_libraries(hog PRIVATE hobbes)
+add_executable(ex ${ex_files})
+target_link_libraries(ex PUBLIC "-rdynamic" PRIVATE hobbes ${Readline_LIBRARIES})
+
 
 enable_testing()
 add_executable(hobbes-test ${test_files})

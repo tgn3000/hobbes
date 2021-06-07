@@ -275,15 +275,17 @@ static inline unsigned spin(unsigned count) {
 }
 
 static inline void uxchg(volatile uint32_t* px, uint32_t nx) {
-  // __asm__ __volatile__(
-  //   "xchgl %0,%1"
-  //   :"=r" (nx)
-  //   :"m" (*px), "0" (nx)
-  //   :"memory"
-  // );
-  const uint32_t t = nx;
-  nx = *px;
-  *px = t;
+#ifdef __aarch64__
+  // https://support.huaweicloud.com/intl/en-us/codeprtr-kunpenggrf/kunpengtaishanporting_12_0025.html
+  __atomic_exchange_n(px, nx, __ATOMIC_SEQ_CST);
+#else // __aarch64__
+  __asm__ __volatile__(
+    "xchgl %0,%1"
+    :"=r" (nx)
+    :"m" (*px), "0" (nx)
+    :"memory"
+  );
+#endif // __aarch64__
 }
 #define xchg __sync_lock_test_and_set
 

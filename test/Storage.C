@@ -222,6 +222,7 @@ TEST(Storage, Inference) {
   EXPECT_EQ(show(c.unsweetenExpression(c.readExpr("newPrim() :: (StoreInto () {a:int,b:[char]} z) => z"))->type()), "{ a:int, b:[char]@? }");
 }
 
+#ifndef __aarch64__
 TEST(Storage, Scripting) {
   std::string fname = mkFName();
   try {
@@ -243,6 +244,7 @@ TEST(Storage, Scripting) {
     throw;
   }
 }
+#endif
 
 TEST(Storage, Alignment) {
   std::string fname = mkFName();

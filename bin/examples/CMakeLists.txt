@@ -1,4 +1,5 @@
 file(GLOB example_cppfiles "example_*.C")
+add_compile_definitions(USE_RUN_CODE=1)
 
 foreach(example_exefile ${example_cppfiles})
   #WE for without extension

@@ -67,6 +67,7 @@ file(GLOB hi_files bin/hi/*.C)
 file(GLOB_RECURSE hog_files bin/hog/*.C)
 file(GLOB ex_files bin/examples/*.C)
 
+# Gary excludes these tests, as they don't run well on macOS
 list(REMOVE_ITEM test_files
   "${CMAKE_CURRENT_SOURCE_DIR}/test/MC.C"
   "${CMAKE_CURRENT_SOURCE_DIR}/test/Storage.C"

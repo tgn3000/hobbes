@@ -101,9 +101,7 @@ add_executable(hi ${hi_files})
 target_link_libraries(hi PUBLIC "-rdynamic" PRIVATE hobbes ${Readline_LIBRARIES})
 add_executable(hog ${hog_files})
 target_link_libraries(hog PRIVATE hobbes)
-add_executable(ex ${ex_files})
-target_link_libraries(ex PUBLIC "-rdynamic" PRIVATE hobbes ${Readline_LIBRARIES})
-
+add_subdirectory(bin/examples)
 
 enable_testing()
 add_executable(hobbes-test ${test_files})

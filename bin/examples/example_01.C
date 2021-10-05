@@ -152,8 +152,59 @@ int main() {
   catch (const std::exception& e) {
     RUN_CODE(std::cout << "Error message: " << e.what(););
   }
-  return 0;
 
+  compiler.define("add1", "(\\x.x+1)::(x)->int"); ///< define a function
+  RUN_CODE(std::cout << compiler.compileFn<int(int)>("x", "add1(x)")(3););
+
+  std::vector<int> xs = {1, 2, 3, 4, 5};
+  RUN_CODE(
+    std::cout << hobbes::makeStdString(
+      compiler.compileFn<
+          const hobbes::array<char>* ///< output type
+          (const std::vector<int>&) ///< input parameter list
+      >("ys", ///< input
+        "show(ys)" ///< output is hobbes::array<char>
+      )(xs) ///< take in parameters
+    );
+  );
+
+  RUN_CODE(
+    // list comprehension
+    std::cout << hobbes::makeStdString(
+      compiler.compileFn<const hobbes::array<char>*()>("show([x | x <- [11, 12, 13], x % 3 == 0])")()
+    );
+  );
+
+//   RUN_CODE(std::cout << compiler.compileFn<int()>(
+//       R"foo(match "abc" "three" with
+// | _ "two" -> 1
+// | "abc" _ -> 2
+// | _ "three" -> 3
+// | _ _ -> 4)foo")();
+//   );
+
+  compiler.define("matchStrings", R"foo((\str1 str2.match str1 str2 with
+| _ "two" -> 1
+| "abc" _ -> 2
+| _ "three" -> 3
+| _ _ -> 4) :: (str1,str2)->int)foo");
+
+  RUN_CODE(std::cout << compiler.compileFn<int()>("matchStrings(\"abc\", \"three\")")(););
+  RUN_CODE(std::cout << compiler.compileFn<int(const char*, const char*)>("str1", "str2", "matchStrings(str1, str2)")("abc", "three"););
+
+  std::string s { R"foo(match x y with
+| 0 0 -> "foo"
+| 0 1 -> "foobar"
+| 1 0 -> "bar"
+| 1 1 -> "barbar"
+| 2 0 -> "chicken"
+| 2 1 -> "chicken bar!"
+| _ _ -> "beats me"
+)foo" };
+  RUN_CODE(std::cout << s;);
+
+  // RUN_CODE(std::cout << compiler.compileFn<char()>("[show(x) | x <- [11, 12, 13], x % 3 == 0]"););
+  return 0;
 }
 
 // TEST(Structs, Consts) {

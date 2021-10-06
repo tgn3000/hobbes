@@ -14,6 +14,8 @@ DEFINE_STRUCT(
   (char,        w)
 );
 
+bool isAlpha(const Bob& bob) { return bob.w >= 'a' && bob.w <= 'z'; }
+
 // DEFINE_STRUCT(
 //   DynStructTest,
 //   (bool,     f),
@@ -64,7 +66,8 @@ struct Compiler
     bob.y = 42.2;
     bob.z = "Hello!";
     bob.w = 'c';
-    compiler.bind("bob", &bob); ///< bind a Bob object to an instance within the compiler
+    compiler.bind("bob", &bob); ///< binds a Bob object to an instance within the compiler
+    compiler.bind("isAlpha", &isAlpha); ///< binds a function
 
     isInitialized = true;
 
@@ -126,6 +129,7 @@ int main() {
     << compiler.compileFn<bool()>("bob.y > 42.0 and bob.y < 43.0")() << ", "
     << compiler.compileFn<bool()>("bob.z == \"Hello!\"")() << ", "
     << compiler.compileFn<bool()>("bob.w == 'c'")() << ", "
+    << compiler.compileFn<bool()>("isAlpha(bob)")() << ", "
     << std::endl;
   );
   RUN_CODE(
@@ -138,9 +142,10 @@ int main() {
   compiler.compileFn<void()>("bob.x <- 90")();
   compiler.compileFn<void()>("bob.y <- 0.1")();
   compiler.compileFn<void()>("bob.z <- \"Word\"")();
-  compiler.compileFn<void()>("let _ = [bob.w <- 'a' | _ <- [0..10]] in ()")();
+  compiler.compileFn<void()>("let _ = [bob.w <- '0' | _ <- [0..10]] in ()")();
   RUN_CODE(
-    std::cout << " After assignment: " << print(bob);
+    std::cout << " After assignment: " << print(bob) << ", "
+    << compiler.compileFn<bool()>("isAlpha(bob)")();
   );
 
   /**
@@ -183,27 +188,28 @@ int main() {
 // | _ _ -> 4)foo")();
 //   );
 
-  compiler.define("matchStrings", R"foo((\str1 str2.match str1 str2 with
+  compiler.define("matchStrings", R"foo(
+(\str1 str2.match str1 str2 with
 | _ "two" -> 1
 | "abc" _ -> 2
 | _ "three" -> 3
-| _ _ -> 4) :: (str1,str2)->int)foo");
+| _ _ -> 4) :: (str1,str2)->int
+)foo");
 
   RUN_CODE(std::cout << compiler.compileFn<int()>("matchStrings(\"abc\", \"three\")")(););
   RUN_CODE(std::cout << compiler.compileFn<int(const char*, const char*)>("str1", "str2", "matchStrings(str1, str2)")("abc", "three"););
 
-  std::string s { R"foo(match x y with
+  compiler.define("matchIntegers", R"foo(
+(\i j.match i j with
 | 0 0 -> "foo"
 | 0 1 -> "foobar"
 | 1 0 -> "bar"
 | 1 1 -> "barbar"
 | 2 0 -> "chicken"
 | 2 1 -> "chicken bar!"
-| _ _ -> "beats me"
-)foo" };
-  RUN_CODE(std::cout << s;);
-
-  // RUN_CODE(std::cout << compiler.compileFn<char()>("[show(x) | x <- [11, 12, 13], x % 3 == 0]"););
+| _ _ -> "beats me") :: (x,y)->[char]
+)foo");
+  RUN_CODE(std::cout << compiler.compileFn<const hobbes::array<char>*(int,int)>("i", "j", "matchIntegers(i, j)")(2, 0););
   return 0;
 }
 

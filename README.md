@@ -761,7 +761,12 @@ A comprehension has the general form:
 [E | p <- S, C]
 ```
 
-Where `E` is a _transform_ or _map_ expression, `S` is an expression producing a sequence (of some type), `p` is a _pattern_ matched against each value in `S` (possibly introducing variables used in `E`), and `C` is a boolean _filter expression_ that decides which values in `S` to select.  The `C` expression is optional and may be omitted.  The pattern `p` is usually just a name for a variable, but can be more complex if necessary.
+Where 
+- `E` is a _transform_ or _map_ expression,
+- `S` is an expression producing a sequence (of some type),
+- `p` is a _pattern_ matched against each value in `S` (possibly introducing variables used in `E`), and
+- `C` is an optional (hence possibly omitted) boolean _filter expression_ that decides which values in `S` to select.
+The pattern `p` is usually just a name for a variable, but can be more complex if necessary.
 
 For example, we might want string representations of numbers evenly divisible by 3, out of the first 20 natural numbers:
 
@@ -993,7 +998,31 @@ pattern := constant
 
 where `constant` is any constant value (`()`, `true`, `42`, `'c'`, etc), `variable` is any name (unique across a row), `f0`, `f1`, ..., `fN` are record field names, and `C` is a variant constructor name.
 
-For convenience, the expression `E matches p` desugars to `match E with | p -> true | _ -> false`.  If the pattern `p` is _irrefutable_ (ie: never fails to match) then `let p = E in B` desugars to `match E with | p -> B`.  If the pattern `p` is irrefutable then `\p.E` desugars to `\x.match x with | p -> E`.  If the pattern `p` is _refutable_ then the expression `\p.E` desugars to `\x.match x with | p -> just(E) | _ -> nothing`.  If the pattern `p` is irrefutable, then `[E | p <- S]` desugars to `map(\p.E, S)`.  If the pattern `p` is refutable, then `[E | p <- S]` desugars to `dropNulls(map(\p.E, S))`.
+For convenience, the expression `E matches p` desugars to 
+<!-- `match E with | p -> true | _ -> false`. -->
+```
+match E with
+| p -> true
+| _ -> false
+```
+- If the pattern `p` is *irrefutable*, i.e., `p` **always** matches, then `let p = E in B` desugars to 
+```
+match E with
+| p -> B
+``` 
+- If the pattern `p` is irrefutable, then `\p.E` desugars to
+```
+\x.match x with 
+| p -> E
+```
+- If the pattern `p` is *refutable*, i.e., `p` may or may not match, then the expression `\p.E` desugars to 
+```
+\x.match x with 
+| p -> just(E)
+| _ -> nothing
+```
+- If the pattern `p` is irrefutable, then `[E | p <- S]` desugars to `map(\p.E, S)`.
+- If the pattern `p` is refutable, then `[E | p <- S]` desugars to `dropNulls(map(\p.E, S))`.
 
 Pattern matching is very useful in many different kinds of applications.  For some uses of hobbes, it even functions as a kind of "rules engine" (where rows are "rules") such that users can derive very efficient machine code from very large match tables.
 

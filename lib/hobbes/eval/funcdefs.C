@@ -193,6 +193,10 @@ const array<char>* makeString(const std::string& x) {
   return makeString(x.data(), x.size());
 }
 
+const array<char>* makeStringFromStringView(std::string_view x) {
+  return makeString(x.data(), x.size());
+}
+
 std::string makeStdString(const array<char>* x) {
   return std::string(x->data, x->size);
 }

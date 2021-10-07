@@ -35,6 +35,7 @@ char* memalloc(size_t, size_t);
 
 // string representations, I/O
 const array<char>* makeString(const std::string& x);
+const array<char>* makeStringFromStringView(std::string_view x);
 std::string makeStdString(const array<char>* x);
 
 const array<char>* makeString(region& m, const char* s);

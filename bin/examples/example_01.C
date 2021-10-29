@@ -3,6 +3,12 @@
 #include <hobbes/hobbes.H>
 #include "example.H"
 
+#define PRINT_RESULT(FUNCTION, COMMAND, PARAMETERS) \
+  COMMAND << " = " << compiler.compileFn<FUNCTION>(COMMAND)(PARAMETERS)
+#define PRINT_RESULT0(COMMAND, FUNCTION, ARGUMENTS, PARAMETERS) \
+  COMMAND << " = " << compiler.compileFn<FUNCTION>(ARGUMENTS)(PARAMETERS)
+#define CONCATENATE(...) __VA_ARGS__
+
 using HobbesCharArray = const hobbes::array<char>*;
 
 template<typename T>
@@ -74,20 +80,22 @@ int main() {
     /**
      * Evaluate expressions
      */
-    << compiler.compileFn<int()>("{a=1, b=2, c=3}.b")() << ", "
-    << compiler.compileFn<int()>("{a=1, b={ c=2, d={ e=3,f=4 }, g=5}, h=6}.b.d.f")() << ", "
-    << compiler.compileFn<HobbesCharArray()>("(1,\"jimmy\",13L).1")() << ", "
-    // << compiler.compileFn<int()>("(if (0 == 0) then (1,2) else (3,4)).0")() << ", "
+    << PRINT_RESULT(int(), "{a=1, b=2, c=3}.b",) << '\n'
+    << PRINT_RESULT(int(), "{a=1, b={ c=2, d={ e=3,f=4 }, g=5}, h=6}.b.d.f",) << '\n'
+    << PRINT_RESULT(HobbesCharArray(), "(1,\"jimmy\",13L).1",) << '\n'
+    << PRINT_RESULT(int(), "(if (0 == 0) then (1,2) else (3,4)).0",) << '\n'
 
     /**
      Check contents of bob
      * */
-    << compiler.compileFn<bool()>("bob.x == 42")() << ", "
-    << compiler.compileFn<bool()>("bob.y > 42.0 and bob.y < 43.0")() << ", "
-    << compiler.compileFn<bool()>("bob.z == \"Hello!\"")() << ", "
-    << compiler.compileFn<bool()>("bob.w == 'c'")() << ", "
-    << compiler.compileFn<bool()>("isAlpha(bob)")() << ", " ///< call the binded function isAlpha
+    << PRINT_RESULT(bool(), "bob.x == 42",) << '\n'
+    << PRINT_RESULT(bool(), "bob.y > 42.0 and bob.y < 43.0",) << '\n'
+    << PRINT_RESULT(bool(), "bob.z == \"Hello!\"",) << '\n'
+    << PRINT_RESULT(bool(), "bob.w == 'c'",) << '\n'
+    << PRINT_RESULT(bool(), "isAlpha(bob)",) << '\n' ///< call the binded function isAlpha
     << std::endl;
+
+    // compiler.compileFn<void()>("print(isAlpha)")() ///< print type of the function isAlpha
   );
   RUN_CODE(
     std::cout << "Before assignment: " << print(bob);
@@ -103,7 +111,7 @@ int main() {
   compiler.compileFn<int()>("let _ = [incrementBobW(i, bob) | i <- [0..2]] in 1")(); ///< match [incrementBobW(i, bob) | i <- [0..2]] with | _ -> 1, hence return int
   RUN_CODE(
     std::cout << " After assignment: " << print(bob) << ", "
-    << compiler.compileFn<bool()>("isAlpha(bob)")();
+    << PRINT_RESULT(bool(), "isAlpha(bob)",);
   );
 
   /**
@@ -157,8 +165,10 @@ do {
 | _ _ -> 4) :: (str1,str2)->int
 )foo");
 
-  RUN_CODE(std::cout << compiler.compileFn<int()>("matchStrings(\"abc\", \"three\")")(););
-  RUN_CODE(std::cout << compiler.compileFn<int(const char*, const char*)>("str1", "str2", "matchStrings(str1, str2)")("abc", "three"););
+  RUN_CODE(std::cout << PRINT_RESULT(int(), "matchStrings(\"abc\", \"three\")",););
+  // equivalent to `compiler.compileFn<int()>("matchStrings(\"abc\", \"three\")")()`
+  RUN_CODE(std::cout << PRINT_RESULT0("matchStrings(\"aaa\", \"three\")", int(const char*, const char*), CONCATENATE("str1", "str2", "matchStrings(str1, str2)"), CONCATENATE("aaa", "three")););
+  // equivalent to compiler.compileFn<int(const char*, const char*)>("str1", "str2", "matchStrings(str1, str2)")("aaa", "three")
 
   compiler.define("matchIntegers", R"foo(
 (\i j.(
@@ -202,20 +212,25 @@ match str with
     << "extractEntry(7, 8) = " << extractEntry(7, 8); // << ", "
   );
 
-  RUN_CODE(std::cout << compiler.compileFn<int()>("let (x, y) = (1, 2) in x + y")());
+  RUN_CODE(std::cout << PRINT_RESULT(int(), "let (x, y) = (1, 2) in x + y",););
   /**
    * Equivalent of
    match (1, 2) with
    | (x, y) -> x + y
   */
 
-  compiler.compileFn<void()>(R"foo(
-tgnAdd a b = do {
-  c = a+b;
-  return c // no semicolon here!
-}
-)foo");
-  RUN_CODE(std::cout << compiler.compileFn<void()>("tgnAdd(3+4)"););
+  compile(
+    &compiler,
+    compiler.readModule(R"foo(
+bob = 42
+type BT = (TypeOf `bob` x) => x
+type BTI = (TypeOf `newPrim()::BT` x) => x
+frank :: BTI
+frank = 3
+)foo"));
+  RUN_CODE(
+      RUN_CODE(std::cout << PRINT_RESULT(int(), "frank",););
+  );
 
   return 0;
 }

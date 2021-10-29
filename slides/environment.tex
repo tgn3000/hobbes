@@ -1,0 +1,30 @@
+%%% BEAMER SETUP
+\setbeamertemplate{navigation symbols}{}
+\mode<presentation>{
+\usetheme{Dresden}
+    \setbeamercovered{transparent} 
+}
+
+\hypersetup{
+    colorlinks=true,       % false: boxed links; true: colored links
+     linkcolor=blue,          % color of internal links (change box color with linkbordercolor)
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=blue           % color of external links
+}
+
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\definecolor{mygray}{rgb}{.7,0.7,0.7}
+\def\cgr#1{\fcolorbox{mygray}{mygray}{{#1}}}
+\def\cg#1{\fcolorbox{GreenYellow}{GreenYellow}{#1}}
+\def\cb#1{\fcolorbox{yellow}{yellow}{\color{black}#1}}
+\setbeamerfont{footnote}{size=\tiny}
+
+\newenvironment{algo}[1]%
+{\sf
+\begin{tabbing}{\bf Algorithm: #1}\\%
+\hspace*{1em}\=\hspace*{1em}\=\hspace*{1em}\=\hspace*{1em}\=\hspace*{1em}\=\hspace*{1em}\=\hspace*{1em}\=\hspace*{1em}\=\kill\!\!}
+{\end{tabbing}}

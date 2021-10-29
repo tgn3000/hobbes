@@ -1,0 +1,73 @@
+% !TEX root = hobbes.tex
+
+\documentclass[svgnames,fleqn]{beamer}
+
+\input ../usepackage
+\input ../environment
+\input ../macros
+
+\begin{document}
+
+\setbeamertemplate{headline}[default]
+\setbeamertemplate{footline}[default]
+\title{Hobbes}
+\author{TGN}
+\date{}
+\frame\titlepage
+\setcounter{page}{1}
+\setbeamertemplate{footline}[text line]{
+\parbox{\linewidth}{\hfill {
+%{\color{palegrey}
+Guangning Tan
+%}
+}\hfill{\large\insertpagenumber}
+}}
+
+\begin{frame}{Hobbes}
+
+https://github.com/morganstanley/hobbes
+
+\bi
+\item High performance C/C++ binding
+\item REPL: Read, Evaluate, Print, Loop
+\item Similar to Python, but variables are strongly typed during ``compile time"
+\bi
+\item ... when the hobbes script is parsed
+\ei
+\item Take strings (of script) as input, and execute C/C++ code
+\item Can modify code logic, without recompiling code
+\ei
+
+\end{frame}
+
+\begin{frame}{Two executables: \li{hi} and \li{hog}}
+\bi
+\item \li{hi}: interactive hobbes
+\item \li{hog}: to record structured data into files
+\ei
+\end{frame}
+
+\begin{frame}{Syntax}
+\bi
+\item \li{\\\\Var1 Var2 ... VarN.Expression} \\
+defines a function \li{Expression} in variables \li{Var1}, \li{Var2}, ... , \li{VarN}
+\bi
+\item Example:\\
+\li{\\\\x y.x+y}\\
+takes \li{x}, \li{y} as input and returns \li{x+y}
+\ei
+\item \li{::} reads ``has type"
+\bi
+\item Example:
+\li{sensor::([char] * { temperature:double, humidity:double })}
+means: \li{sensor} is a 2-element tuple, marked by \li{*}
+\bi
+\item the first element is a string
+\item the second element is a structure with two doubles
+\ei
+\ei
+\ei
+
+\end{frame}
+
+\end{document}

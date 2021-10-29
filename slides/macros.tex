@@ -1,0 +1,238 @@
+\newcommand\Rational[2]{\text{Rational}(#1,#2)}
+\newcommand\IKFastpp{{\sc IKFast++}}
+
+\definecolor{dgreen}{RGB}{0,120,0}
+\definecolor{mypurple}{RGB}{138,43,226}
+\definecolor{palegray}{rgb}{0.7,0.7,0.7}
+\definecolor{palegrey}{rgb}{0.9,0.9,0.9}
+\newcommand{\lgo}{{\color{green}0}}
+\newcommand{\seto}[1]{\{\, #1\,\}}
+\newcommand{\cls}{\hspace{6pt}}
+\newcommand\Fin{F_{\text{in}}}
+\newcommand{\lbar}[1]{\mc{1}{|c}{$#1$}}
+\newcommand{\dbar}{\lbar{}}
+\newcommand\phanbull{\phantom{^\bullet}}
+\newcommand\lo[1]{^{(<#1)}}
+\definecolor{navy}{RGB}{0,0,153}
+\newcommand\bluetri{{\color{navy}\mathsmaller{\mathsmaller{{\blacktriangleright}}}}\,\,\,\,}
+\newcommand\bluesq{{\color{navy}\mathsmaller{\blacksquare}\;\;}}
+
+\newcommand{\hvt}[1]{#1^\bullet}
+ \newcommand{\hvtmark}[1]{{\color{red}{#1}}}
+\newcommand{\zeromark}[1]{{\color{blue}{#1}}}
+\newcommand{\nzmark}[1]{{\color{green}{#1}}}
+
+\newcommand{\mcl}[1]{\multicolumn{1}{c}{#1}}
+\newcommand{\hir}[1]{{\color{red}#1}}
+\newcommand{\hig}[1]{{\color{blue}#1}}
+\newcommand{\hin}[1]{{\color{dgreen}#1}}
+\newcommand{\him}[1]{{\color{magenta}#1}}
+\newcommand{\hip}[1]{{\color{palegray}#1}}
+\renewcommand{\~}[1]{\mathbf{#1}}
+
+\newcommand{\newsig}{\overline\sigma}
+\newcommand{\newSig}{\overline\Sigma}
+\newcommand{\newJ}{\~{\overline J}}
+\newcommand{\newf}{\overline f}
+\newcommand{\newtr}{\overline T}
+\newcommand{\newg}{\overline g}
+\newcommand{\val}[1]{\text{Val}\,#1}
+%\newcommand{\set}[1]{\{\, #1 \,\}}
+
+
+\newcommand{\hc}{\widehat{c}}
+\newcommand{\hC}{\widehat{C}}
+\newcommand{\hD}{\widehat{D}}
+\newcommand\JacPttrn{\~S_{\~J}}%\~S_0(\~c) 
+\newcommand{\neginf}{-\infty}
+\newcommand\nequiv{\not\equiv}
+\newcommand\LCconst{\underline{c}}
+\newcommand\ESconst{\overline{c}}
+
+\newcommand\Jac{\~J}
+\newcommand\Jij[2]{J_{#1#2}}
+
+\newcommand{\hoder}[2]{\sigma\left(#1,#2\right)}
+\newcommand{\comphoder}[2]{\widetilde\sigma\left(#1,#2\right)}
+\newcommand{\compsij}{\widetilde\sigma_{ij}}
+\newcommand{\compsig}[2]{\widetilde\sigma_{#1,#2}}
+\newcommand{\compJ}{\~{\widetilde J}}
+\newcommand{\compSig}{\widetilde \Sigma}
+\newcommand{\compSigma}{\widetilde \Sigma}
+\newcommand{\rank}{\text{rank}}
+
+\newcommand\dof{\text{DOF}\xspace}
+
+\renewcommand\ker[1]{\text{ker}(#1)}
+\newcommand\coker[1]{\text{coker}(#1)}
+% Fancy Tableau
+
+\newcommand{\OK}[1]{\colorbox{palegray}{\ensuremath{#1}}}
+\newcommand{\dd}[2]{\frac{\text{d} #1}{\text{d} #2}}
+\newcommand{\ddin}[2]{\text{d} #1/\text{d} #2}
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\ppin}[2]{\partial #1/\partial #2}
+\newcommand{\ppsubs}[2]{\partial #1_{#2}}
+\newcommand{\fracin}[2]{#1/#2}
+
+\newcommand\rnge[2]{#1:#2}
+
+% !TEX root = MAIN.tex
+
+\newcommand{\examplesdir}{examples/}
+\newcommand{\daesdir}{examples/DAEs}
+\newcommand{\exdir}{./talk_examples/graphs/} %relative path to where graphs are found
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\bc}{\begin{center}}
+\newcommand{\ec}{\end{center}}
+
+\newcommand{\hvtt}[1]{{\color{blue}#1}}
+\newcommand{\hvto}[1]{{\color{red}#1}}
+\newcommand{\lam}{\lambda}
+\newcommand{\ninf}{{-\!\infty}}
+\newcommand{\der}[2]{ {#1}^{(#2)} }
+\newcommand\jton {j=1,\ldots,n}
+
+%%% my new commands and definitions
+
+\newcommand{\TW}{\textwidth}
+\newcommand{\nc}[1]{{\color{blue}#1}}
+\newcommand{\hd}{\widehat{d}}
+\newcommand{\HIbox}[1]{{\fcolorbox{pink}{pink}{#1}}}
+\newcommand\set[2]{\{\,#1\mid\mbox{#2}\,\}}
+\newcommand{\x}{\times}
+
+\def\mybox(#1,#2)#3{\put(#1,#2){\framebox(20,20){\rule{0em}{2ex}$#3$}}}
+\def\myboxr(#1,#2)#3{\put(#1,#2){\alert{\framebox(20,20){\rule{0em}{2ex}$#3$}}}}
+
+%The next bit is to define multiple refs in the syntax
+%   \rf{lab1,lab2,lab3} producing something like (21, 22, 25)
+%None of the lab's may start with a . (period).
+%The argument of \@rf is terminated by the first , (comma) encountered.
+%If a . (period) is the next after that, it stops, else it recursively
+%  calls itself.
+%\rf kicks off the recursion & ensures it terminates by appending ,.
+%  to the user's input.
+%\@endrf eats up the terminating period.
+%If you have a convention that all equation labels start with eq: ,
+%you can replace \ref{#1} by \ref{eq:#1} .
+%Then \rf{lab1,lab2} actually references labels eq:lab1, eq:lab2 .
+\makeatletter
+\def\rf#1{(\@rf#1,.)}
+\def\@rf#1,{\ref{eq:#1}\@ifnextchar . {\@endrf}{, \@rf}}
+\def\@endrf.{}
+\makeatother
+
+\newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
+
+%\def\~#1{{\bf #1}}
+\newcommand{\bs}[1]{{\bf #1}}
+\newcommand{\daets}{{\sc Daets}\xspace}
+\newcommand{\daesa}{{\sc Daesa}\xspace}
+\newcommand{\fadbad}{{\sc Fadbad++}\xspace}
+%\newcommand{\ipopt}{{\sc ipopt}\xspace}
+%\newcommand{\dassl}{{\sc Dassl}\xspace}
+%\newcommand{\radau}{{\sc Radau}\xspace}
+\newcommand{\matlab}{{\sc Matlab}\xspace}
+
+\lstset{
+	basicstyle=\tt,
+	keywordstyle=\bf,
+	language=C++,
+	commentstyle=\color{blue},
+	texcl=true
+	}
+\newcommand{\li}[1]{\lstinline{#1}}
+
+\newcommand{\s}[1]{\text{\scriptsize$#1$}}
+%%%%%%%%%%%%
+
+\def\cpp{{\tt C++}}
+\def\iton{1\leq i\leq n}
+\def\sij{\sigma_{ij}}
+
+\newcommand{\BAmc}[3]{\BAmulticolumn{#1}{#2}{#3}}
+\newcommand{\HI}[1]{{\color{red}#1}}
+\renewcommand{\ss}[1]{\text{\scriptsize #1}}
+\newcommand{\colvect}[1]{\left( \begin{array}{c}#1\end{array} \right)}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\dbd}[2]{\frac{\partial #1}{\partial #2}} %displayed generic partial derivative
+\newcommand{\dbdt}[2]{\partial #1 / \partial #2}  %in-line generic partial derivative
+\newcommand{\Val}{\mathop{\rm Val}}
+
+\def\WW{0.49\textwidth}
+
+\newcommand{\sfrac}[2] { {\textstyle \frac{#1}{#2} } }
+
+\newcommand{\nn}{\nonumber}
+\newcommand{\pn}{p.}
+\newcommand{\lines}[2]{lines~{[\ref{#1}}--{\ref{#2}}]}
+\newcommand{\cs}{,\,}
+\newcommand{\cc}{\,}
+
+% SETS
+\newcommand{\Set}[1]{ \{ #1   \}}
+\newcommand{\Setbg}[1]{ \bigl\{ #1   \bigr\}}
+\newcommand{\setbg}[1]{ \{ #1   \}}
+\renewcommand{\mid}{\,\colon \,}
+\newcommand{\Sep}{\,\,}
+\newcommand{\sep}{\,}
+\newcommand{\Abs}[1]{ |#1| }
+\newcommand{\Absbg}[1]{ \bigl|#1\bigr| }
+
+\newcommand{\NumSet}[1] { {\mathbb #1 }}
+\newcommand{\JS}{\mathbf{J}}
+
+\newcommand\bq{\~q}
+\newcommand\qdot{{\dot{q}}}
+\newcommand\qddot{{\ddot{q}}}
+\newcommand\bqdot{\~{\dot{q}}}
+\newcommand\bqddot{\~{\ddot{q}}}
+\newcommand\blam{\boldsymbol{\lam}}
+
+\newcommand\dx{\dot{x}}
+\newcommand\ddx{\ddot{x}}
+\newcommand\dy{\dot{y}}
+\newcommand\ddy{\ddot{y}}
+\newcommand\dth{\dot{\theta}}
+\newcommand\ddth{\ddot{\theta}}
+
+\newcommand\relpossun{\~a}
+\newcommand\relposcentre{\~r}
+
+\newcommand\modf{{\overline f}}
+\newcommand\modSig{{\overline \Sigma}}
+\newcommand\modJ{{\overline {\~J}}}
+
+\newcommand\vi[1]{\theta_{#1}}
+\newcommand\hb[1]{{\color{blue}#1}}
+\newcommand\hg[1]{{\color{dgreen}#1}}
+\newcommand\hgy[1]{{\color{GreenYellow}#1}}
+\newcommand\hp[1]{{\color{mypurple}#1}}
+
+% counters
+\newcommand\FigDir{./Figures}
+\newcounter{ExampleNumber}
+\setcounter{ExampleNumber}{0}
+\newcommand\dispExample{Example \theExampleNumber}
+\newcommand\stepExample{\stepcounter{ExampleNumber}}
+
+\newcommand\AddIKFastHeadline[2]{
+\setbeamertemplate{headline}[default]
+\setbeamertemplate{footline}[default]
+\title{#1\\[2ex]
+{\small Developing \IKFastpp\ (#2)}}
+\author{TGN}
+\date{}
+\frame\titlepage
+\setcounter{page}{1}
+\setbeamertemplate{footline}[text line]{
+\parbox{\linewidth}{\hfill {
+%{\color{palegrey}
+\copyright 2020 Guangning Tan
+%}
+}\hfill{\large\insertpagenumber}
+}}
+}

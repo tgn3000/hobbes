@@ -47,7 +47,7 @@ https://github.com/morganstanley/hobbes
 \ei
 \end{frame}
 
-\begin{frame}{Syntax}
+\begin{frame}{Some syntax}
 \bi
 \item \li{\\\\Var1 Var2 ... VarN.Expression} \\
 defines a function \li{Expression} in variables \li{Var1}, \li{Var2}, ... , \li{VarN}
@@ -66,6 +66,111 @@ means: \li{sensor} is a 2-element tuple, marked by \li{*}
 \item the second element is a structure with two doubles
 \ei
 \ei
+\ei
+
+\end{frame}
+
+\begin{frame}[fragile]
+The fully general form of match expressions may be written
+\begin{lstlisting}
+match val1 val2 ... valN with
+| pat11 pat12 ... pat1N where cond1 -> exp1
+| pat21 pat22 ... pat2N where cond2 -> exp2
+| ...
+| patM1 patM2 ... patMN where condM -> expM
+| _ -> expDefault
+\end{lstlisting}
+
+where
+
+\bi
+\item \li{val1, val2, ..., valN} are $N$ expressions to be matched
+\item \li{pat_ij} is the pattern to match \li{val_i}
+\item \li{cond_i} (optional) is the condition to apply further
+\item \li{exp_j} is the result expression to evaluate. Note all \li{exp_j} should have the same type
+\ei
+
+\end{frame}
+
+\begin{frame}[fragile]{Short writing in matching}
+
+\bi
+\item The "sugaring" means "writing in short"
+\item The expression
+\begin{lstlisting}
+expr matches pat
+\end{lstlisting}
+is equivalent to
+\begin{lstlisting}
+match expr with
+| pat -> true
+| _ -> false
+\end{lstlisting}
+
+\item If we can always match \li{pat} with \li{expr} (i.e., \li{pat} is {\em irrefutable}), then
+\begin{lstlisting}
+let pat = expr in ret
+\end{lstlisting}
+is equivalent to
+\begin{lstlisting}
+match expr with
+| pat -> ret
+\end{lstlisting}
+\ei
+\end{frame}
+
+\begin{frame}[fragile]
+
+\bi
+\item If \li{pat} is irrefutable, then
+\begin{lstlisting}
+\pat.expr
+\end{lstlisting}
+is equivalent to
+\begin{lstlisting}
+\x.match x with 
+| pat -> expr
+\end{lstlisting}
+otherwise
+\begin{lstlisting}
+\x.match x with 
+| p -> just(expr)
+| _ -> nothing
+\end{lstlisting}
+
+\item Remarks:
+\bi
+\item the "\li{nothing}" to \li{hobbes} is  \li{std::nullopt} to C++
+\item "\li{maybe}" type $\Leftarrow\Rightarrow$ \li{std::optional}
+\item "\li{just(var)}" $\Leftarrow\Rightarrow$ \li{oVar} such that  \li{oVar.has_value()==true}
+\ei
+\ei
+\end{frame}
+
+\begin{frame}[fragile]
+\bi
+\item If the pattern \li{pat} is \hb{irrefutable}, then
+\begin{lstlisting}
+[expr | pat <- list]
+\end{lstlisting}
+is equivalent to
+\begin{lstlisting}
+map(\pat.expr, list).
+\end{lstlisting}
+
+\item \li{map} is similar to the list comprehension in Python. For example,
+\begin{lstlisting}
+map(\x.x+9, [1..10])
+\end{lstlisting}
+would generate
+\begin{lstlisting}
+[10,11,12,13,14,15,16,17,18,19,20]
+\end{lstlisting}
+\item Written short in \li{hobbes} as
+\begin{lstlisting}
+[x+9 | x <- [1..10]]
+\end{lstlisting}
+\item If \li{pat} is \hb{refutable}, then \li{dropNulls} will be called upon the result, to remove any item that is \li{nothing}
 \ei
 
 \end{frame}
